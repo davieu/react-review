@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import Radium from 'radium';
 import Person from './Person/Person';
+
 
 class App extends Component {
   state = {
@@ -18,24 +20,20 @@ class App extends Component {
       console.log(p.id === id)
       return p.id === id;
     })
-    console.log('1: ', personIndex)
 
     const person = {
       ...this.state.persons[personIndex]
     }; 
-    console.log('2: ', person)
 
     //this is the older way of copying an object
     // const person = Object.assign({}, this.state.persons[personIndex])
 
     person.name = event.target.value
-    console.log('3: ', person.name)
 
     const persons = [...this.state.persons];
-    console.log('4: ', persons)
     persons[personIndex] = person;
 
-    console.log('5: ', person)
+
     this.setState({ persons: persons})
   }
 
@@ -51,14 +49,36 @@ class App extends Component {
     this.setState({showPersons: !doesShow})
   }
 
+  resetList = () => {
+    this.setState({ persons: [
+      { id: 'asd32', name: 'Max', age: 28},
+      { id: '23dsd', name: 'Manu', age: 29},
+      { id: '4ed3d', name: 'Stephanie', age: 26}
+    ]})
+  }
+
   render() {
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
+    };
+
+    const style2 = {
+      backgroundColor: 'blue',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
       cursor: 'pointer'
-    };
+    }
 
     let persons = null;
 
@@ -75,20 +95,41 @@ class App extends Component {
               changed={(event) => this.nameChangedHandler(event, person.id)}/>
           })}
         </div>
-      )
+      );
+
+      style.backgroundColor = 'red';
+      style[':hover'] = {
+        backgroundColor: 'salmon',
+        color: 'black'
+      }
+    };
+
+    const classes = [];
+    if (this.state.persons.length <= 2 ) {
+      classes.push('red');
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold');
     }
 
     return (
       <div className="App">
         <h1>Hi I'm a react app</h1>
-        <p>hello</p>
+        <p className={classes.join(' ')}>This is really working</p>
         <button 
           style={style}
-          onClick={this.togglePersonsHandler}>Switch Name</button>
+          onClick={this.togglePersonsHandler}>
+          {this.state.showPersons ? 'Hide' : 'Show'}
+        </button>
+        <button 
+          style={style2}
+          onClick={this.resetList}>
+          Reset List
+        </button>
           {persons}
       </div>
     );
   }
 }
 
-export default App;
+export default Radium(App);
