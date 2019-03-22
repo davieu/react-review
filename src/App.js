@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classes from './App.module.css';
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 
 class App extends Component {
@@ -57,48 +58,30 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-      backgroundColor: 'green',
-      color: 'white', 
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-    };
-
-    const style2 = {
-      backgroundColor: 'blue',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    }
-
     let persons = null;
+    let btnClass = '';
 
     if (this.state.showPersons) {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return <Person
-              click={() => this.deletePersonHandler(index)} 
-              // click= {this.deletePersonHandler.bind(this, index)}
-              name={person.name} 
-              age={person.age}
-              key={person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)}/>
+            return <ErrorBoundary key={person.id}>
+              <Person
+                click={() => this.deletePersonHandler(index)} 
+                // click= {this.deletePersonHandler.bind(this, index)}
+                name={person.name} 
+                age={person.age}         
+                changed={(event) => this.nameChangedHandler(event, person.id)}/>
+              </ErrorBoundary>
           })}
         </div>
       );
-
-      style.backgroundColor = 'red';
+      btnClass = classes.Red;
     };
 
     const assignedClasses = [];
     if (this.state.persons.length <= 2 ) {
       assignedClasses.push(classes.red);
-      console.log(classes.red)
     }
     if (this.state.persons.length <= 1) {
       assignedClasses.push(classes.bold);
@@ -108,13 +91,13 @@ class App extends Component {
       <div className={classes.App}>
         <h1>Hi I'm a react app</h1>
         <p className={assignedClasses.join(' ')}>This is really working</p>
-        <button 
-          style={style}
+        <button
+          className={btnClass} 
           onClick={this.togglePersonsHandler}>
           {this.state.showPersons ? 'Hide' : 'Show'}
         </button>
         <button 
-          style={style2}
+          className={classes.resetList}
           onClick={this.resetList}>
           Reset List
         </button>
